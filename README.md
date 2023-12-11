@@ -138,7 +138,7 @@ Così facendo a terminale si avrà la lista di tutte le rotte definite in Expres
 
 ## MIDDLEWARES
 
-In Express, un middleware è una funzione che ha accesso agli oggetti di richiesta (request), risposta (response), e successivo middleware nella catena delle richieste. Esso può eseguire operazioni su tali oggetti, modificare la richiesta e la risposta, o terminare la catena delle richieste. I middleware sono utilizzati per aggiungere funzionalità, gestire richieste e risposte, nonché per eseguire azioni specifiche durante il ciclo di vita di una richiesta HTTP.
+In Express, un middleware è una funzione che ha accesso agli oggetti di richiesta (request), risposta (response), e al successivo middleware nella catena delle richieste. Esso può eseguire operazioni su tali oggetti, modificare la richiesta e la risposta, o terminare la catena delle richieste. I middleware sono utilizzati per aggiungere funzionalità, gestire richieste e risposte, nonché per eseguire azioni specifiche durante il ciclo di vita di una richiesta HTTP.
 
 ### Esempio middleware di autenticazione:
 
@@ -1019,13 +1019,15 @@ const Post = mongoose.model("Post", postSchema);
 ```js
 app.get("/posts", async (req, res) => {
   try {
-    const posts = await Post.find({}).populate("author");
-    res.json(posts); // Invia i post con i dettagli degli autori come risposta JSON
+    const posts = await Post.find({}).populate("author", "-_id -__v");
+    res.json(posts);
   } catch (err) {
     console.error(err);
     res.status(500).send("Si è verificato un errore nel server");
   }
 });
+//il secondo parametro di .populate serve ad escludere le chiavi _id  e __v
+//un po' come fa select
 ```
 
 In questo codice:
@@ -1033,6 +1035,8 @@ In questo codice:
 - `.populate('author')` dice a Mongoose di sostituire ogni author (che è un ID) con il documento User corrispondente.
 
 - Il risultato sarà una lista di post, dove ogni post ha il campo author sostituito con i dati completi dell'utente (nome, email, ecc.), anziché solo l'ID.
+
+- Quando eseguo `.populate("author", "-_id -__v")`, Mongoose effettua internamente una <u>doppia query</u>. La prima query recupera tutti i documenti dalla collezione Post. Successivamente, per ogni documento post recuperato, Mongoose effettua una seconda query per trovare e inserire i dati relativi all'autore (author) da una collezione separata (di solito una collezione di utenti o autori).
 
 ## Utilizzo variabili d'ambiente
 

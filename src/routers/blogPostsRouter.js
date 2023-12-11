@@ -8,7 +8,7 @@ blogPostsRouter.use(express.json());
 
 blogPostsRouter.get("/", async (req, res, next) => {
   try {
-    const blogPosts = await BlogPost.find({});
+    const blogPosts = await BlogPost.find({}).populate("author", "-_id -__v").select("-__v");
     res.json(blogPosts);
   } catch (err) {
     err.statusCode = 404;

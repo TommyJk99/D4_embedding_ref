@@ -41,6 +41,16 @@ const blogPostsSchema = new Schema({
     ref: "authors", //Questo è il riferimento alla collezione degli autori
   },
 
+  //in questo casso mongodb attribuisce ad ogni elemento del vettore un id
+  comments: {
+    type: [
+      {
+        name: String,
+        text: String,
+      },
+    ],
+  },
+
   content: {
     type: String,
     required: true,
