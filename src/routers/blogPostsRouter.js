@@ -8,7 +8,9 @@ blogPostsRouter.use(express.json());
 
 blogPostsRouter.get("/", async (req, res, next) => {
   try {
-    const blogPosts = await BlogPost.find({}).populate("author", "-_id -__v").select("-__v");
+    const blogPosts = await BlogPost.find({})
+      .populate("author", "-_id -__v")
+      .select("-__v");
     res.json(blogPosts);
   } catch (err) {
     err.statusCode = 404;
@@ -45,9 +47,13 @@ blogPostsRouter.post("/", async (req, res, next) => {
 
 blogPostsRouter.put("/:id", async (req, res, next) => {
   try {
-    const updatePost = await BlogPost.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
+    const updatePost = await BlogPost.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      {
+        new: true,
+      }
+    );
     res.json(updatePost);
   } catch (err) {
     next(err);
@@ -66,5 +72,39 @@ blogPostsRouter.delete("/:id", async (req, res, next) => {
     next(err);
   }
 });
+
+//commenti
+
+blogPostsRouter
+  .get("/:id/comments", async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const comments = await BlogPost.findById(id).select("comments -_id");
+
+      if (!comments) return res.status(404).send();
+
+      res.json(comments);
+    } catch (err) {
+      next(err);
+    }
+  })
+  .get("/:id/comments/:commentId", async (req, res, next) => {
+    try {
+      const { id, commentId } = req.params;
+      const post = await BlogPost.findOne(
+        { _id: id, "comments._id": commentId },
+        { "comments.$": 1, _id: 0 }
+      );
+
+      if (!post || !post.comments.length) {
+        return res.status(404).send("Commento non trovato");
+      }
+
+      const comment = post.comments[0];
+      res.json(comment);
+    } catch (err) {
+      next(err);
+    }
+  });
 
 export default blogPostsRouter;
