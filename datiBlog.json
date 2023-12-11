@@ -1,0 +1,142 @@
+[ 
+{
+    "category": "Machine Learning",
+    "title": "Introduzione alle reti neurali",
+    "cover": "https://example.com/neural-networks-cover.jpg",
+    "readTime": {
+      "value": 14,
+      "unit": "minuti"
+    },
+    "author": {
+      "name": "Sophia Clark",
+      "avatar": "https://example.com/sophia-avatar.jpg"
+    },
+    "content": "<p>Contenuto dell'articolo sull'introduzione alle reti neurali.</p>"
+  },
+  {
+    "category": "Cloud Computing",
+    "title": "Principi fondamentali di AWS",
+    "cover": "https://example.com/aws-cover.jpg",
+    "readTime": {
+      "value": 16,
+      "unit": "minuti"
+    },
+    "author": {
+      "name": "Michael Turner",
+      "avatar": "https://example.com/michael-avatar.jpg"
+    },
+    "content": "<p>Contenuto dell'articolo sui principi fondamentali di AWS.</p>"
+  },
+  {
+    "category": "Cybersecurity",
+    "title": "Difesa da attacchi DDoS",
+    "cover": "https://example.com/ddos-cover.jpg",
+    "readTime": {
+      "value": 12,
+      "unit": "minuti"
+    },
+    "author": {
+      "name": "Emma White",
+      "avatar": "https://example.com/emma-avatar.jpg"
+    },
+    "content": "<p>Contenuto dell'articolo sulla difesa da attacchi DDoS.</p>"
+  },
+  {
+    "category": "Web Design",
+    "title": "Principi di UI/UX Design",
+    "cover": "https://example.com/ui-ux-cover.jpg",
+    "readTime": {
+      "value": 10,
+      "unit": "minuti"
+    },
+    "author": {
+      "name": "Daniel Garcia",
+      "avatar": "https://example.com/daniel-avatar.jpg"
+    },
+    "content": "<p>Contenuto dell'articolo sui principi di UI/UX Design.</p>"
+  },
+  {
+    "category": "Mobile Development",
+    "title": "Sviluppo di app Android con Kotlin",
+    "cover": "https://example.com/kotlin-cover.jpg",
+    "readTime": {
+      "value": 18,
+      "unit": "minuti"
+    },
+    "author": {
+      "name": "Isabel Martinez",
+      "avatar": "https://example.com/isabel-avatar.jpg"
+    },
+    "content": "<p>Contenuto dell'articolo sullo sviluppo di app Android con Kotlin.</p>"
+  },
+  {
+    "category": "Blockchain",
+    "title": "Concetti di base delle criptovalute",
+    "cover": "https://example.com/blockchain-cover.jpg",
+    "readTime": {
+      "value": 14,
+      "unit": "minuti"
+    },
+    "author": {
+      "name": "Ryan Thompson",
+      "avatar": "https://example.com/ryan-avatar.jpg"
+    },
+    "content": "<p>Contenuto dell'articolo sui concetti di base delle criptovalute.</p>"
+  },
+  {
+    "category": "Data Science",
+    "title": "Analisi dei dati con Python e Pandas",
+    "cover": "https://example.com/pandas-cover.jpg",
+    "readTime": {
+      "value": 20,
+      "unit": "minuti"
+    },
+    "author": {
+      "name": "Sophie Wilson",
+      "avatar": "https://example.com/sophie-avatar.jpg"
+    },
+    "content": "<p>Contenuto dell'articolo sull'analisi dei dati con Python e Pandas.</p>"
+  },
+  {
+    "category": "DevOps",
+    "title": "Containerization con Docker",
+    "cover": "https://example.com/docker-cover.jpg",
+    "readTime": {
+      "value": 15,
+      "unit": "minuti"
+    },
+    "author": {
+      "name": "James Brown",
+      "avatar": "https://example.com/james-avatar.jpg"
+    },
+    "content": "<p>Contenuto dell'articolo sulla containerizzazione con Docker.</p>"
+  },
+  {
+    "category": "JavaScript",
+    "title": "Async/Await: Gestione asincrona in JavaScript",
+    "cover": "https://example.com/async-await-cover.jpg",
+    "readTime": {
+      "value": 12,
+      "unit": "minuti"
+    },
+    "author": {
+      "name": "Lily Smith",
+      "avatar": "https://example.com/lily-avatar.jpg"
+    },
+    "content": "<p>Contenuto dell'articolo sull'uso di Async/Await per la gestione asincrona in JavaScript.</p>"
+  },
+  {
+    "category": "Artificial Intelligence",
+    "title": "Etica nell'Intelligenza Artificiale",
+    "cover": "https://example.com/ai-ethics-cover.jpg",
+    "readTime": {
+      "value": 16,
+      "unit": "minuti"
+    },
+    "author": {
+      "name": "William Turner",
+      "avatar": "https://example.com/william-avatar.jpg"
+    },
+    "content": "<p>Contenuto dell'articolo sull'etica nell'Intelligenza Artificiale.</p>"
+  }
+]
