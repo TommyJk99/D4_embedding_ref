@@ -45,10 +45,11 @@ const blogPostsSchema = new Schema({
   comments: {
     type: [
       {
-        name: String,
-        text: String,
+        name: { type: String, required: true },
+        text: { type: String, required: true },
       },
     ],
+    required: true,
   },
 
   content: {
@@ -57,4 +58,8 @@ const blogPostsSchema = new Schema({
   },
 });
 
-export const BlogPost = mongoose.model("blogPosts", blogPostsSchema, "blogPosts");
+export const BlogPost = mongoose.model(
+  "blogPosts",
+  blogPostsSchema,
+  "blogPosts"
+);

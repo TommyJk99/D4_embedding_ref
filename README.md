@@ -236,7 +236,9 @@ userRouter.post("/", async (req, res, next) => {
 // Esempio userRouter.put
 userRouter.put("/:id", async (req, res, next) => {
   try {
-    const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
     res.json(updatedUser);
   } catch (error) {
     next(error);
@@ -396,13 +398,20 @@ db.collection("film").find().limit(5);
 ### 6. Inserimento di un nuovo documento:
 
 ```js
-db.collection("utenti").insertOne({ nome: "Mario", età: 25, email: "mario@example.com" });
+db.collection("utenti").insertOne({
+  nome: "Mario",
+  età: 25,
+  email: "mario@example.com",
+});
 ```
 
 ### 7. Aggiornamento di un documento esistente
 
 ```js
-db.collection("prodotti").updateOne({ nome: "Prodotto1" }, { $set: { prezzo: 150 } });
+db.collection("prodotti").updateOne(
+  { nome: "Prodotto1" },
+  { $set: { prezzo: 150 } }
+);
 ```
 
 ### 8. Eliminazione di documenti in base a un criterio:
@@ -505,7 +514,12 @@ Consideriamo il seguente URL per fare la richiestra get: <br>
 productsRouter.get("/", async (req, res, next) => {
   try {
     // Estrai i parametri di query e imposta i valori predefiniti
-    let { limit = 10, skip = 0, sortBy = "createdAt", order = "asc" } = req.query;
+    let {
+      limit = 10,
+      skip = 0,
+      sortBy = "createdAt",
+      order = "asc",
+    } = req.query;
 
     // Converti limit e skip in numeri e verifica che siano positivi
     limit = Math.max(parseInt(limit, 10), 1); // Imposta un limite minimo di 1
@@ -519,8 +533,16 @@ productsRouter.get("/", async (req, res, next) => {
 
     // Opzioni di filtro per il prezzo
     const priceFilter = {};
-    if (req.query.minPrice) priceFilter.price = { ...priceFilter.price, $gte: parseInt(req.query.minPrice, 10) };
-    if (req.query.maxPrice) priceFilter.price = { ...priceFilter.price, $lte: parseInt(req.query.maxPrice, 10) };
+    if (req.query.minPrice)
+      priceFilter.price = {
+        ...priceFilter.price,
+        $gte: parseInt(req.query.minPrice, 10),
+      };
+    if (req.query.maxPrice)
+      priceFilter.price = {
+        ...priceFilter.price,
+        $lte: parseInt(req.query.maxPrice, 10),
+      };
 
     // Costruisci e esegui la query
     const query = Product.find(priceFilter)
@@ -544,8 +566,16 @@ productsRouter.get("/", async (req, res, next) => {
 
 ```js
 const priceFilter = {};
-if (req.query.minPrice) priceFilter.price = { ...priceFilter.price, $gte: parseInt(req.query.minPrice, 10) };
-if (req.query.maxPrice) priceFilter.price = { ...priceFilter.price, $lte: parseInt(req.query.maxPrice, 10) };
+if (req.query.minPrice)
+  priceFilter.price = {
+    ...priceFilter.price,
+    $gte: parseInt(req.query.minPrice, 10),
+  };
+if (req.query.maxPrice)
+  priceFilter.price = {
+    ...priceFilter.price,
+    $lte: parseInt(req.query.maxPrice, 10),
+  };
 /*il valore 10 nel parseInt serve a controllare che il valore minimo e massimo venga interpretato
 nel sistema decimale*/
 ```
@@ -604,18 +634,22 @@ productsRouter.get("/", async (req, res, next) => {
     // Convalida sortBy e order
     const allowedSortFields = ["createdAt", "price"];
     const allowedOrders = ["asc", "desc"];
-    const safeSortBy = allowedSortFields.includes(sortBy) ? sortBy : "createdAt";
+    const safeSortBy = allowedSortFields.includes(sortBy)
+      ? sortBy
+      : "createdAt";
     const safeOrder = allowedOrders.includes(order) ? order : "asc";
 
     // Opzioni di filtro per il prezzo con validazione
     const priceFilter = {};
     if (req.query.minPrice) {
       const minPrice = parseInt(req.query.minPrice, 10);
-      if (!isNaN(minPrice)) priceFilter.price = { ...priceFilter.price, $gte: minPrice };
+      if (!isNaN(minPrice))
+        priceFilter.price = { ...priceFilter.price, $gte: minPrice };
     }
     if (req.query.maxPrice) {
       const maxPrice = parseInt(req.query.maxPrice, 10);
-      if (!isNaN(maxPrice)) priceFilter.price = { ...priceFilter.price, $lte: maxPrice };
+      if (!isNaN(maxPrice))
+        priceFilter.price = { ...priceFilter.price, $lte: maxPrice };
     }
 
     // Costruisci e esegui la query
@@ -861,6 +895,30 @@ userRouter.delete("/:id", async (req, res, next) => {
 });
 ```
 
+### Esempio chiamata GET (ricerca all'interno di un vettore)
+
+```js
+    .get("/:id/comments/:commentId", async (req, res, next) => {
+    try {
+      const { id, commentId } = req.params;
+      console.log(req.params);
+      const comment = await BlogPost.findOne(
+        { _id: id }, //trova il blog con queste caratteristiche
+        { comments: { $elemMatch: { _id: commentId } } }
+        //restituisce tutti e solo i commenti con questa caratteristica
+      );
+
+      if (!comment || !comment.comments.length) {
+        return res.status(404).send("Commento non trovato");
+      }
+
+      res.json(comment.comments[0]); //se guardi i dati che ti arrivano, capisci il perchè
+    } catch (err) {
+      next(err);
+    }
+  });
+```
+
 ## Schemi e modelli
 
 - questo codice definisce uno <b>schema Mongoose</b> per un modello chiamato Author, che rappresenta gli autori in un'applicazione. Gli autori sono rappresentati come documenti in una collezione chiamata "authors", e ogni autore ha campi come name, lastname, age, email, birthday, e avatar. Il modello Mongoose Author fornisce un'interfaccia per effettuare operazioni CRUD (Create, Read, Update, Delete) sulla collezione di autori nel database MongoDB:
@@ -891,6 +949,15 @@ const AuthorSchema = new Schema({
   },
   avatar: {
     type: String,
+    required: true,
+  },
+  comments: {
+    type: [
+      {
+        name: { type: String, required: true },
+        text: { type: String, required: true },
+      },
+    ],
     required: true,
   },
 });

@@ -91,17 +91,35 @@ blogPostsRouter
   .get("/:id/comments/:commentId", async (req, res, next) => {
     try {
       const { id, commentId } = req.params;
-      const post = await BlogPost.findOne(
-        { _id: id, "comments._id": commentId },
-        { "comments.$": 1, _id: 0 }
+      console.log(req.params);
+      const comment = await BlogPost.findOne(
+        { _id: id }, //trova il blog con queste caratteristiche
+        { comments: { $elemMatch: { _id: commentId } } } //restituisce i commenti con questa caratteristica
       );
 
-      if (!post || !post.comments.length) {
+      if (!comment || !comment.comments.length) {
         return res.status(404).send("Commento non trovato");
       }
 
-      const comment = post.comments[0];
-      res.json(comment);
+      res.json(comment.comments[0]);
+    } catch (err) {
+      next(err);
+    }
+  })
+  .post("/:id", async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const newComment = req.body;
+
+      const post = await BlogPost.findById(id);
+
+      if (!post) {
+        return res.status(404).send("Post non trovato");
+      }
+
+      post.comments.push(newComment);
+      await post.save();
+      res.status(201).send("Commento aggiunto con successo");
     } catch (err) {
       next(err);
     }
