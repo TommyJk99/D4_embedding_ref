@@ -73,7 +73,7 @@ blogPostsRouter.delete("/:id", async (req, res, next) => {
   }
 });
 
-//commenti
+//COMMENTI
 
 blogPostsRouter
   .get("/:id/comments", async (req, res, next) => {
@@ -111,15 +111,60 @@ blogPostsRouter
       const { id } = req.params;
       const newComment = req.body;
 
-      const post = await BlogPost.findById(id);
+      const updatedPost = await BlogPost.findOneAndUpdate(
+        { _id: id },
+        { $push: { comments: newComment } },
+        { new: true, runValidators: true } // restituisce il documento aggiornato e esegue i validatori dello schema
+      );
 
-      if (!post) {
+      if (!updatedPost) {
         return res.status(404).send("Post non trovato");
       }
 
-      post.comments.push(newComment);
-      await post.save();
       res.status(201).send("Commento aggiunto con successo");
+    } catch (err) {
+      next(err);
+    }
+  })
+  .put("/:id/comments/:commentId", async (req, res, next) => {
+    try {
+      const { id, commentId } = req.params; // Estraggo id e commentId dall'URL
+      const { name, text } = req.body; // Estraggo name e text dal body
+
+      const updatedComment = await BlogPost.findOneAndUpdate(
+        { _id: id, "comments._id": commentId },
+        {
+          $set: {
+            "comments.$.name": name, // Aggiorno il nome del commento
+            "comments.$.text": text, // Aggiorno il testo del commento
+          },
+        },
+        { new: true } // Restituisce il documento aggiornato
+      );
+
+      res.status(200).json(updatedComment);
+    } catch (err) {
+      next(err);
+    }
+  })
+  .delete("/:id/comments/:commentId", async (req, res, next) => {
+    try {
+      const { id, commentId } = req.params;
+
+      // Trova il post e rimuove il commento specifico
+      const updatedPost = await BlogPost.findOneAndUpdate(
+        { _id: id }, //trovo il post che ha questo id
+        { $pull: { comments: { _id: commentId } } }, // Rimuovo il commento che ha come id commentId
+        { new: true } // Restituisco il documento aggiornato
+      );
+
+      if (!updatedPost) {
+        return res
+          .status(404)
+          .send("Post non trovato o commento non esistente");
+      }
+
+      res.status(200).send("Commento eliminato con successo");
     } catch (err) {
       next(err);
     }

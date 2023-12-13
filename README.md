@@ -837,7 +837,36 @@ userRouter.get("/:id", async (req, res, next) => {
 });
 ```
 
-### Esempio chiamata POST
+### Esempio chiamata GET (ricerca id all'interno di un vettore di oggetti)
+
+- Questo codice è un esempio di come implementare un endpoint GET in un'applicazione Express per recuperare un commento specifico da un post del blog:
+
+```js
+    .get("/:id/comments/:commentId", async (req, res, next) => {
+    try {
+      const { id, commentId } = req.params;
+
+      const comment = await BlogPost.findOne(
+        { _id: id }, //trova il blog con queste caratteristiche
+        { comments: { $elemMatch: { _id: commentId } } }
+        //restituisce il commenti con questo id
+      );
+
+      if (!comment || !comment.comments.length) {
+        return res.status(404).send("Commento non trovato");
+      }
+
+      console.log(comment); //se guardi i dati che ti arrivano, capisci il perchè della riga sotto
+      res.json(comment.comments[0]);
+    } catch (err) {
+      next(err);
+    }
+  });
+```
+
+`{ comments: { $elemMatch: { _id: commentId } } }` è una proiezione che utilizza l'operatore `$elemMatch`. Questo operatore filtra l'array comments del post del blog, <u>restituendo solo il commento che ha l'ID corrispondente a commentId</u>. In questo modo, anche se ci sono molti commenti, solo quello richiesto viene restituito.
+
+### Esempio chiamata POST (new e save)
 
 - In questo esempio vado a creare un nuovo utente tramite una richiesta POST:
 
@@ -858,6 +887,31 @@ userRouter.post("/", async (req, res, next) => {
 export default userRouter;
 ```
 
+### Esempio chiamata POST ($push e findOneAndUpdate)
+
+```js
+.post("/:id", async (req, res, next) => {
+    try {
+      const { id } = req.params; //estraggo id dall'URL
+      const newComment = req.body; // estraggo il nuovo commento dal body
+
+      const updatedPost = await BlogPost.findOneAndUpdate(
+        { _id: id }, //trovo il blog con questo id
+        { $push: { comments: newComment } }, //pusho un nuovo commento all'interno dell'array di oggetti
+        { new: true, runValidators: true } // restituisce il documento aggiornato e esegue i validatori dello schema
+      );
+
+      if (!updatedPost) {
+        return res.status(404).send("Post non trovato");
+      }
+
+      res.status(201).send("Commento aggiunto con successo!");
+    } catch (err) {
+      next(err);
+    }
+  })
+```
+
 ### Esempio chiamata PUT
 
 - In questo esempio modifico gli attributi di un utente:
@@ -873,6 +927,32 @@ userRouter.put("/:id", async (req, res, next) => {
     next(error);
   }
 });
+```
+
+### Esempio chiamata PUT ($set e findOneAndUpdate)
+
+```js
+.put("/:id/comments/:commentId", async (req, res, next) => {
+    try {
+      const { id, commentId } = req.params; // Estraggo id e commentId dall'URL
+      const { name, text } = req.body; // Estraggo name e text dal body
+
+      const updatedComment = await BlogPost.findOneAndUpdate(
+        { _id: id, "comments._id": commentId },
+        {
+          $set: {
+            "comments.$.name": name, // Aggiorno il nome del commento
+            "comments.$.text": text, // Aggiorno il testo del commento
+          },
+        },
+        { new: true } // Restituisce il documento aggiornato
+      );
+
+      res.status(200).json(updatedComment);
+    } catch (err) {
+      next(err);
+    }
+  });
 ```
 
 ### Esempio chiamata DELETE
@@ -895,24 +975,27 @@ userRouter.delete("/:id", async (req, res, next) => {
 });
 ```
 
-### Esempio chiamata GET (ricerca all'interno di un vettore)
+### Esempio chiamata DELETE ($pull e findOneAndUpdate)
 
 ```js
-    .get("/:id/comments/:commentId", async (req, res, next) => {
+.delete("/:id/comments/:commentId", async (req, res, next) => {
     try {
       const { id, commentId } = req.params;
-      console.log(req.params);
-      const comment = await BlogPost.findOne(
-        { _id: id }, //trova il blog con queste caratteristiche
-        { comments: { $elemMatch: { _id: commentId } } }
-        //restituisce tutti e solo i commenti con questa caratteristica
+
+      // Trova il post e rimuove il commento specifico
+      const updatedPost = await BlogPost.findOneAndUpdate(
+        { _id: id }, //trovo il post che ha questo id
+        { $pull: { comments: { _id: commentId } } }, // Rimuovo il commento che ha come id commentId
+        { new: true } // Restituisco il documento aggiornato
       );
 
-      if (!comment || !comment.comments.length) {
-        return res.status(404).send("Commento non trovato");
+      if (!updatedPost) {
+        return res
+          .status(404)
+          .send("Post non trovato o commento non esistente");
       }
 
-      res.json(comment.comments[0]); //se guardi i dati che ti arrivano, capisci il perchè
+      res.status(200).send("Commento eliminato con successo");
     } catch (err) {
       next(err);
     }
