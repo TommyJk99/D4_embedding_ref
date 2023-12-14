@@ -435,6 +435,11 @@ apiRouter.patch("/multipart", upload.single("avatar"), (req, res, next) => {
 });
 ```
 
+- login: yivegoj751@mcenb.com
+- pssw: Epic0de!
+
+## Inviare un' email con Resend
+
 # MongoDB Atlas
 
 - creazione di un'utenza
@@ -1292,3 +1297,7 @@ dotenv.config();
 - https://temp-mail.org/en/ nel caso volessi creare una email temporanea
 - https://www.submarinecablemap.com/ per vedere il traffico dati sottomarino
 - https://cloudinary.com ci consente di parcheggiare i nostri file
+- https://www.garanteprivacy.it/data-breach nel caso ci rompessero il sito
+- https://picsum.photos/ foto a caso
+- https://randomuser.me/ API per utenti a caso (json)
+- https://app.tuta.com/login Tutanota GmbH è un fornitore di posta elettronica cifrata.
